@@ -187,6 +187,14 @@
             <li>⛏️ <a href="minecraft.html"><b>2009 Minecraft Corner</b></a> <span style="color:red; font-size:10px;">NEW!</span></li>
           </ul>
         </div>
+        <!-- 秘密樹屋密碼鎖入口 -->
+        <div class="side-box">
+          <div class="side-header" style="background-color:#2E5A1C; color:#CCFF99;">:: SECRET CORNERS ::</div>
+          <ul style="margin:0; padding-left:18px; line-height:1.8;">
+            <li>⛏️ <a href="minecraft.html"><b>2009 Minecraft Village</b></a></li>
+            <li>🌳 <a href="javascript:void(0)" onclick="enterTreehouse()"><b>Secret Tree House</b></a> 🔒</li>
+          </ul>
+        </div>
       </td>
     </tr>
   </table>
@@ -380,11 +388,26 @@ function updateCountdown() {
 
   timerEl.innerHTML = `${days}D ${h}:${m}:${s}`;
 }
-
 // 網頁載入立刻執行一次，之後每 1000 毫秒（1秒）更新一次
 updateCountdown();
 setInterval(updateCountdown, 1000);
-
+// =========================================================================
+// 秘密樹屋密碼鎖驗證（你可以自由修改下方的密碼！）
+// =========================================================================
+function enterTreehouse() {
+  const SECRET_PASS = "2001"; // 👈 這裡可以改成你想要的任何密碼！
+  const userInput = prompt("🌳 [ TREE HOUSE SECURITY ]\nEnter the secret password to climb up the ladder:");
+  
+  if (userInput === null) return; // 使用者按取消
+  
+  if (userInput === SECRET_PASS) {
+    alert("🔓 Access Granted! Climbing up to the Tree House...");
+    window.location.href = "treehouse.html";
+  } else {
+    alert("🚫 WRONG PASSWORD! The trapdoor stays locked.");
+  }
+}
+  
 </script>
 
 </body>
