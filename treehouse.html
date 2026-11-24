@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>🌳 Welcome to the Secret Tree House! 🌳</title>
+<style>
+  /* 森林樹屋深綠格紋背景 */
+  body {
+    background-color: #1B3318;
+    background-image: 
+      radial-gradient(#2D5228 2px, transparent 2px),
+      radial-gradient(#122410 2px, #1B3318 2px);
+    background-size: 28px 28px;
+    background-position: 0 0, 14px 14px;
+    font-family: "Verdana", "Tahoma", sans-serif;
+    font-size: 12px;
+    color: #2B1D0E;
+    margin: 20px;
+  }
+
+  /* 樹屋木板主框架 */
+  .treehouse-wrapper {
+    width: 820px;
+    margin: 0 auto;
+    background-color: #D2B48C; /* 溫暖原木色 */
+    border: 4px solid #4A2E15;
+    box-shadow: inset 3px 3px 0px #EAD6B7, inset -3px -3px 0px #8B5A2B, 6px 6px 0px rgba(0,0,0,0.5);
+    padding: 8px;
+  }
+
+  /* 頂部樹屋橫幅 */
+  .treehouse-banner {
+    background: linear-gradient(90deg, #2E5A1C, #4C8C2B);
+    color: #FFFFCC;
+    padding: 10px 14px;
+    border: 2px solid #1E3D12;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .treehouse-banner h1 {
+    margin: 0;
+    font-size: 20px;
+    text-shadow: 2px 2px 0px #14290C;
+    letter-spacing: 1px;
+  }
+
+  /* 雙欄表格排版 */
+  .main-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+  }
+  .videos-col {
+    width: 600px;
+    vertical-align: top;
+    padding-right: 10px;
+  }
+  .sidebar-col {
+    width: 200px;
+    vertical-align: top;
+  }
+
+  /* 主標題：Videos of the Day */
+  .section-header {
+    background-color: #5C3A21;
+    color: #FFE4B5;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 6px 10px;
+    border: 2px solid #3B2313;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+
+  /* 四個影片放置格 (2x2 網格) */
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .video-card {
+    background-color: #F5E6D3;
+    border: 2px solid #6B4423;
+    padding: 8px;
+    box-shadow: inset 1px 1px 0px #FFF;
+  }
+  .video-title {
+    font-weight: bold;
+    color: #3B2313;
+    margin-bottom: 6px;
+    font-size: 12px;
+    border-bottom: 1px dashed #8B5A2B;
+    padding-bottom: 3px;
+  }
+
+  /* 復古電視螢幕影片框 */
+  .video-screen {
+    width: 100%;
+    height: 155px;
+    background-color: #111111;
+    border: 3px inset #5C3A21;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: #00FF00;
+    font-family: "Courier New", monospace;
+    text-align: center;
+    overflow: hidden;
+  }
+  .video-screen video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* 右側 Sidebar 木牌盒子 */
+  .wood-box {
+    background-color: #F5E6D3;
+    border: 2px solid #5C3A21;
+    margin-bottom: 12px;
+    padding: 8px;
+  }
+  .wood-box-header {
+    background-color: #3B6E22;
+    color: #FFFFFF;
+    font-weight: bold;
+    padding: 4px 6px;
+    margin: -8px -8px 8px -8px;
+    font-size: 11px;
+    border-bottom: 2px solid #234214;
+  }
+  .nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .nav-list li {
+    margin-bottom: 6px;
+    border-bottom: 1px dotted #A07855;
+    padding-bottom: 4px;
+  }
+  .nav-list a {
+    text-decoration: none;
+    color: #2E5A1C;
+    font-weight: bold;
+    display: block;
+  }
+  .nav-list a:hover {
+    color: #D2691E;
+    padding-left: 4px;
+  }
+
+  .wood-btn {
+    background-color: #8B5A2B;
+    color: #FFF;
+    border: 2px outset #C19A6B;
+    padding: 5px 10px;
+    font-family: "Verdana", sans-serif;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 100%;
+  }
+  .wood-btn:active { border-style: inset; }
+</style>
+</head>
+<body>
+
+<div class="treehouse-wrapper">
+  <!-- 樹屋頂部橫幅 -->
+  <div class="treehouse-banner">
+    <h1>🌳 THE SECRET TREE HOUSE</h1>
+    <span style="font-size:11px; background:#1B3318; padding:3px 8px; border:1px solid #8FBC8F;">
+      🔓 Members Only Hideout
+    </span>
+  </div>
+
+  <table class="main-table">
+    <tr>
+      <!-- 左側：Videos of the Day 四格影片區 -->
+      <td class="videos-col">
+        <div class="section-header">📼 VIDEOS OF THE DAY</div>
+
+        <div class="video-grid">
+          <!-- 影片框 1 -->
+          <div class="video-card">
+            <div class="video-title">🎞️ Tape #01: Morning Vibes</div>
+            <div class="video-screen">
+              <!-- 💡 以後有影片檔時，把下面這行註解打開並填入檔名即可： -->
+              <!-- <video src="video1.mp4" controls></video> -->
+              <div>[ NO SIGNAL / EMPTY TAPE ]</div>
+              <div style="font-size:10px; color:#888; margin-top:4px;">Insert video1.mp4 here</div>
+            </div>
+          </div>
+
+          <!-- 影片框 2 -->
+          <div class="video-card">
+            <div class="video-title">🎞️ Tape #02: Study Break Clip</div>
+            <div class="video-screen">
+              <!-- <video src="video2.mp4" controls></video> -->
+              <div>[ NO SIGNAL / EMPTY TAPE ]</div>
+              <div style="font-size:10px; color:#888; margin-top:4px;">Insert video2.mp4 here</div>
+            </div>
+          </div>
+
+          <!-- 影片框 3 -->
+          <div class="video-card">
+            <div class="video-title">🎞️ Tape #03: Retro Archive</div>
+            <div class="video-screen">
+              <!-- <video src="video3.mp4" controls></video> -->
+              <div>[ NO SIGNAL / EMPTY TAPE ]</div>
+              <div style="font-size:10px; color:#888; margin-top:4px;">Insert video3.mp4 here</div>
+            </div>
+          </div>
+
+          <!-- 影片框 4 -->
+          <div class="video-card">
+            <div class="video-title">🎞️ Tape #04: Secret Recording</div>
+            <div class="video-screen">
+              <!-- <video src="video4.mp4" controls></video> -->
+              <div>[ NO SIGNAL / EMPTY TAPE ]</div>
+              <div style="font-size:10px; color:#888; margin-top:4px;">Insert video4.mp4 here</div>
+            </div>
+          </div>
+        </div>
+      </td>
+
+      <!-- 右側：樹屋導覽 Sidebar -->
+      <td class="sidebar-col">
+        <div class="wood-box">
+          <div class="wood-box-header">🧭 TREE HOUSE SECTIONS</div>
+          <ul class="nav-list">
+            <li><a href="#videos" onclick="alert('📼 You are currently viewing: Videos of the Day!')">📼 Videos</a></li>
+            <li><a href="#photos" onclick="alert('📷 [Photos Room] Coming soon! Still developing film...')">📷 Photos</a></li>
+            <li><a href="#fanfictions" onclick="alert('✍️ [Fanfictions Corner] Coming soon! Writing in progress...')">✍️ Fanfictions</a></li>
+            <li><a href="#rpg" onclick="alert('⚔️ [Mini RPG] Coming soon! Leveling up character...')">⚔️ RPG</a></li>
+          </ul>
+        </div>
+
+        <div class="wood-box">
+          <div class="wood-box-header">🪵 TREE HOUSE RULES</div>
+          <p style="margin:0 0 8px 0; font-size:11px; line-height:1.4;">
+            1. Don't tell anyone the password.<br>
+            2. Rewind the VHS tapes after watching.<br>
+            3. Bring snacks! 🍪
+          </p>
+          <a href="index.html" style="text-decoration:none;">
+            <button class="wood-btn">🪜 Climb Down (Main Blog)</button>
+          </a>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+</body>
+</html>
