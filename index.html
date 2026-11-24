@@ -182,6 +182,36 @@
 // =========================================================================
 const blogPosts = [
     {
+    date: "2001-12-12",
+    time: "10:35 AM",
+    title: "Stealth Mode: Grinding Math Problems in the Back Row 🎧📐",
+    mood: "In The Zone 🎯",
+    music: "Daft Punk - Harder, Better, Faster, Stronger",
+    customClass: "",
+    content: `
+      <div style="background-color:#F8F9FA; background-image: linear-gradient(#D0E1F9 1px, transparent 1px), linear-gradient(90deg, #D0E1F9 1px, transparent 1px); background-size: 16px 16px; border: 2px solid #2B5B84; padding: 14px; color: #1A1A1A; font-family: 'Verdana', sans-serif;">
+        <div style="background:#2B5B84; color:#FFF; padding:3px 8px; font-size:11px; font-weight:bold; display:inline-block; margin-bottom:8px;">
+          📍 LOCATION: 3RD ROW BY THE WINDOW | STATUS: STEALTH STUDYING
+        </div>
+        <p style="background:rgba(255,255,255,0.85); padding:6px; border-left:3px solid #2B5B84; line-height:1.5;">
+          The teacher is up at the blackboard going on and on about something totally unrelated to the exam, and the whole class is half asleep. Meanwhile, I've got my earphones plugged into my portable CD player hidden inside my hoodie sleeve, completely locked into my own world grinding mock math tests.
+        </p>
+        <p style="background:rgba(255,255,255,0.85); padding:6px; border-left:3px solid #2B5B84; line-height:1.5;">
+          Nothing beats the feeling of solving a brutal trigonometry problem right when the chorus drops! Just gotta make sure I look up and nod every 5 minutes so I don't get busted. 😎
+        </p>
+        <div style="background:#E2E8F0; border:2px outset #FFFFFF; padding:8px; margin-top:10px; text-align:center;">
+          <div style="font-size:11px; font-weight:bold; color:#334155;">💿 PORTABLE WALKMAN NOISE-CANCELING SIMULATOR</div>
+          <div id="classroom-audio" style="margin:6px 0; font-family:'Courier New', monospace; font-size:12px; color:#B91C1C; font-weight:bold;">
+            🔊 Ambient Sound: Teacher lecturing loudly...
+          </div>
+          <button class="retro-btn" onclick="const el=document.getElementById('classroom-audio'); if(el.innerText.includes('Teacher')){el.innerText='🎧 Earphones ON: Pure Synthwave Beats + Math Flow!'; el.style.color='#15803D';}else{el.innerText='🔊 Ambient Sound: Teacher lecturing loudly...'; el.style.color='#B91C1C';}">
+            [ TOGGLE EARPHONES ]
+          </button>
+        </div>
+      </div>
+    `
+  },
+  {
     date: "2001-12-10",
     time: "02:18 AM",
     title: "Surviving the GSAT Exam Marathon... Send Coffee! ☕📚",
@@ -255,29 +285,55 @@ blogPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
 
 const container = document.getElementById('posts-container');
 const archiveList = document.getElementById('archive-list');
-const archiveSet = new Set();
 
-blogPosts.forEach(post => {
-  // 渲染文章
-  const postHTML = `
-    <div class="post-card ${post.customClass}">
-      <h2 class="post-title">${post.title}</h2>
-      <div class="post-meta">
-        📅 <b>${post.date}</b> @ ${post.time} | 🎭 Mood: ${post.mood} | 🎵 Music: ${post.music}
+// 渲染文章的主函式（支援依年月份篩選）
+function renderPosts(filterYM = null) {
+  container.innerHTML = '';
+  
+  // 如果正在篩選特定月份，頂部顯示提示與「顯示全部」按鈕
+  if (filterYM) {
+    container.innerHTML += `
+      <div style="background:#FFFFCC; border:1px solid #999; padding:6px 10px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center;">
+        <span>📂 Showing archives for: <b>${filterYM}</b></span>
+        <button class="retro-btn" onclick="renderPosts(null)">[ Show All Posts ]</button>
       </div>
-      <div class="post-body">${post.content}</div>
-    </div>
+    `;
+  }
+
+  const filtered = filterYM 
+    ? blogPosts.filter(p => p.date.startsWith(filterYM)) 
+    : blogPosts;
+
+  filtered.forEach(post => {
+    container.innerHTML += `
+      <div class="post-card ${post.customClass}">
+        <h2 class="post-title">${post.title}</h2>
+        <div class="post-meta">
+          📅 <b>${post.date}</b> @ ${post.time} | 🎭 Mood: ${post.mood} | 🎵 Music: ${post.music}
+        </div>
+        <div class="post-body">${post.content}</div>
+      </div>
+    `;
+  });
+}
+
+// 統計每個年月份的文章數量並建立可點擊的 Archive 連結
+const archiveCounts = {};
+blogPosts.forEach(post => {
+  const ym = post.date.substring(0, 7);
+  archiveCounts[ym] = (archiveCounts[ym] || 0) + 1;
+});
+
+Object.keys(archiveCounts).forEach(ym => {
+  archiveList.innerHTML += `
+    <li>
+      <a href="javascript:void(0)" onclick="renderPosts('${ym}')">${ym}</a> (${archiveCounts[ym]})
+    </li>
   `;
-  container.innerHTML += postHTML;
-
-  // 收集年月到側邊欄 Archive
-  const yearMonth = post.date.substring(0, 7);
-  archiveSet.add(yearMonth);
 });
 
-archiveSet.forEach(ym => {
-  archiveList.innerHTML += `<li><a href="#${ym}">${ym}</a></li>`;
-});
+// 網頁載入時預設顯示全部文章
+renderPosts(null);
 </script>
 
 </body>
