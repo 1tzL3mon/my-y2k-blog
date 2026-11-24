@@ -2,10 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>⛏️ Minecraft Classic Corner (2009) ⛏️</title>
+<title>⛏️ Minecraft Village & Mine OS (2009) ⛏️</title>
 <style>
-  /* 2009 經典泥土方塊質感背景 */
+  * { box-sizing: border-box; }
   body {
+    margin: 0;
+    padding: 0;
+    font-family: "Courier New", monospace;
+    color: #FFFFFF;
+    transition: background 0.4s ease;
+  }
+
+  /* ================= 場景 1：村莊大廳背景 ================= */
+  body.hub-mode {
     background-color: #3b2818;
     background-image: 
       linear-gradient(45deg, #2d1e12 25%, transparent 25%), 
@@ -14,50 +23,26 @@
       linear-gradient(-45deg, transparent 75%, #2d1e12 75%);
     background-size: 32px 32px;
     background-position: 0 0, 0 16px, 16px -16px, -16px 0;
-    font-family: "Courier New", monospace;
-    color: #FFFFFF;
     text-align: center;
-    margin: 20px;
+    padding: 20px;
   }
 
-  /* 經典 Minecraft 黃色斜體閃爍標語 (Splash Text) */
-  .header-box {
-    margin-bottom: 20px;
-  }
-  .mc-title {
-    font-size: 36px;
-    font-weight: bold;
-    color: #CCCCCC;
-    text-shadow: 4px 4px 0px #3F3F3F;
-    letter-spacing: 3px;
-    margin: 0;
-  }
-  .splash-text {
-    color: #FFFF00;
-    font-size: 16px;
-    font-weight: bold;
-    text-shadow: 2px 2px 0px #3F3F00;
-    transform: rotate(-4deg);
-    display: inline-block;
-    margin-top: -5px;
-    animation: pulse 0.8s infinite alternate;
-  }
-  @keyframes pulse {
-    from { transform: rotate(-4deg) scale(1); }
-    to { transform: rotate(-4deg) scale(1.08); }
+  /* ================= 場景 2：礦坑 Windows 桌面背景 ================= */
+  body.mine-mode {
+    background-color: #1c1c1c;
+    /* 模擬深層岩石壁 + 鑽石原礦微光與火把暖光 */
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(255, 170, 0, 0.22) 0%, transparent 35%),
+      radial-gradient(circle at 85% 75%, rgba(0, 255, 255, 0.15) 0%, transparent 30%),
+      linear-gradient(90deg, rgba(0,0,0,0.4) 1px, transparent 1px),
+      linear-gradient(rgba(0,0,0,0.4) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Verdana", "Tahoma", sans-serif;
   }
 
-  /* 經典石頭質感主面板 */
-  .stone-panel {
-    width: 680px;
-    margin: 0 auto;
-    background-color: #7D7D7D;
-    border: 4px solid #000000;
-    box-shadow: inset 4px 4px 0px #A8A8A8, inset -4px -4px 0px #545454;
-    padding: 16px;
-  }
-
-  /* 經典 Minecraft 立體按鈕 */
+  /* 經典 Minecraft 按鈕 */
   .mc-btn {
     background-color: #7D7D7D;
     color: #FFFFFF;
@@ -69,7 +54,7 @@
     box-shadow: inset 2px 2px 0px #B8B8B8, inset -2px -2px 0px #4A4A4A;
     cursor: pointer;
     text-shadow: 2px 2px 0px #3F3F3F;
-    margin: 3px;
+    margin: 4px;
   }
   .mc-btn:hover {
     background-color: #6B88FF;
@@ -79,133 +64,327 @@
     background-color: #4CAF50;
     box-shadow: inset 2px 2px 0px #81C784, inset -2px -2px 0px #2E7D32;
   }
+  .mc-btn.locked {
+    background-color: #444;
+    color: #888;
+    cursor: not-allowed;
+  }
+
+  /* 村莊建築導覽列 */
+  .village-nav {
+    width: 700px;
+    margin: 0 auto 15px auto;
+    background-color: #5C4033;
+    border: 4px solid #000;
+    box-shadow: inset 3px 3px 0px #8B634B, inset -3px -3px 0px #3B271E;
+    padding: 12px;
+  }
+
+  .stone-panel {
+    width: 700px;
+    margin: 0 auto;
+    background-color: #7D7D7D;
+    border: 4px solid #000000;
+    box-shadow: inset 4px 4px 0px #A8A8A8, inset -4px -4px 0px #545454;
+    padding: 16px;
+  }
 
   /* 互動式方塊畫布 */
   #world-grid {
     display: grid;
     grid-template-columns: repeat(16, 32px);
-    grid-template-rows: repeat(10, 32px);
+    grid-template-rows: repeat(8, 32px);
     gap: 1px;
-    background-color: #5599FF; /* 2009 經典亮藍天空 */
+    background-color: #5599FF;
     border: 4px solid #222;
     width: fit-content;
-    margin: 15px auto;
+    margin: 12px auto;
     cursor: crosshair;
   }
-
-  .block {
-    width: 32px;
-    height: 32px;
-    box-sizing: border-box;
-  }
-  .block:hover {
-    outline: 2px solid #000000;
-    z-index: 2;
-  }
-
-  /* 方塊材質貼圖 (純 CSS 像素風) */
+  .block { width: 32px; height: 32px; }
+  .block:hover { outline: 2px solid #000; }
   .air { background: transparent; }
   .grass { background: linear-gradient(to bottom, #4C9A2A 28%, #6B4423 28%); border: 1px solid #3B2412; }
-  .stone { background-color: #888888; background-image: radial-gradient(#666 15%, transparent 16%); background-size: 8px 8px; border: 1px solid #555; }
+  .stone { background-color: #888; border: 1px solid #555; }
   .wood { background-color: #9C7C4C; border: 2px solid #6B522E; }
-  .diamond { background-color: #888888; background-image: radial-gradient(#00FFFF 25%, transparent 26%); background-size: 10px 10px; border: 1px solid #00AAAA; }
-  .tnt { background-color: #D92626; border: 2px solid #800000; display: flex; align-items: center; justify-content: center; color: #FFF; font-size: 9px; font-weight: bold; }
+  .diamond { background-color: #888; background-image: radial-gradient(#00FFFF 25%, transparent 26%); background-size: 10px 10px; border: 1px solid #00AAAA; }
+
+  /* ================= 礦坑 Windows 桌面元件樣式 ================= */
+  #mine-desktop {
+    display: none;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    padding: 20px;
+  }
+
+  /* 桌面圖示列 */
+  .desktop-icons {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    width: 110px;
+    float: left;
+  }
+  .win-icon {
+    text-align: center;
+    cursor: pointer;
+    padding: 6px;
+    border: 1px solid transparent;
+    color: #FFF;
+    text-shadow: 1px 1px 2px #000;
+    font-size: 11px;
+  }
+  .win-icon:hover {
+    background-color: rgba(0, 0, 128, 0.45);
+    border: 1px dotted #FFF;
+  }
+  .win-icon-emoji {
+    font-size: 30px;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  /* 經典 Windows 98 視窗 (文章閱讀器) */
+  .win98-window {
+    width: 620px;
+    max-width: 78vw;
+    background-color: #C0C0C0;
+    color: #000000;
+    border-top: 2px solid #FFFFFF;
+    border-left: 2px solid #FFFFFF;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    box-shadow: 6px 6px 0px rgba(0,0,0,0.6);
+    margin: 10px auto 0 140px;
+    display: flex;
+    flex-direction: column;
+  }
+  .win98-titlebar {
+    background: linear-gradient(90deg, #000080, #1084d0);
+    color: #FFFFFF;
+    font-weight: bold;
+    font-size: 12px;
+    padding: 4px 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .win98-menubar {
+    background-color: #C0C0C0;
+    border-bottom: 1px solid #808080;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #222;
+  }
+  .win98-body {
+    background-color: #FFFFFF;
+    border: 2px inset #808080;
+    margin: 6px;
+    padding: 16px;
+    height: 410px;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .win98-statusbar {
+    background-color: #C0C0C0;
+    border-top: 1px solid #808080;
+    padding: 3px 8px;
+    font-size: 11px;
+    color: #333;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  /* 底部 Windows 開始工作列 */
+  .win98-taskbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 32px;
+    background-color: #C0C0C0;
+    border-top: 2px solid #FFFFFF;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 8px;
+    color: #000;
+    font-size: 12px;
+  }
+  .start-btn {
+    background-color: #C0C0C0;
+    border-top: 2px solid #FFF;
+    border-left: 2px solid #FFF;
+    border-right: 2px solid #404040;
+    border-bottom: 2px solid #404040;
+    font-weight: bold;
+    padding: 2px 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .start-btn:active {
+    border-top: 2px solid #404040;
+    border-left: 2px solid #404040;
+  }
+  .taskbar-clock {
+    border: 1px inset #808080;
+    padding: 2px 10px;
+    font-size: 11px;
+    background: #DCDCDC;
+  }
 </style>
 </head>
-<body>
+<body class="hub-mode">
 
-  <div class="header-box">
-    <h1 class="mc-title">MINECRAFT</h1>
-    <div class="splash-text">Java Edition Classic 0.0.23a_01!</div>
+  <!-- ==================== 畫面 A：村莊大廳 (VILLAGE HUB) ==================== -->
+  <div id="village-hub">
+    <h1 style="font-size:32px; text-shadow:3px 3px 0 #000; margin:0 0 5px 0;">MINECRAFT VILLAGE</h1>
+    <div style="color:#FFFF00; font-weight:bold; margin-bottom:15px;">:: Under Construction — Building My Digital World ::</div>
+
+    <!-- 村莊房間傳送門（未來可以在這裡一直加新建築！） -->
+    <div class="village-nav">
+      <div style="font-weight:bold; margin-bottom:8px; color:#FFD700;">🗺️ VILLAGE BUILDINGS (CLICK TO ENTER)</div>
+      <button class="mc-btn" onclick="enterRoom('mine')" style="background-color:#2E7D32;">⛏️ Enter The Mine (Writing & Reading OS)</button>
+      <button class="mc-btn locked" onclick="alert('🚧 Still gathering wood & cobblestone! Coming soon...')">📚 Library [Locked]</button>
+      <button class="mc-btn locked" onclick="alert('🚧 Furnace is still cold! Coming soon...')">⚒️ Blacksmith [Locked]</button>
+    </div>
+
+    <!-- 原本的方塊建造型畫布 -->
+    <div class="stone-panel">
+      <div style="margin-bottom:8px; font-size:12px;"><b>[ VILLAGE SANDBOX ]</b> Build something while the village grows!</div>
+      <div id="toolbar">
+        <button class="mc-btn active" onclick="selectTool('grass', this)">🟩 Grass</button>
+        <button class="mc-btn" onclick="selectTool('stone', this)">⬜ Stone</button>
+        <button class="mc-btn" onclick="selectTool('wood', this)">🟫 Wood</button>
+        <button class="mc-btn" onclick="selectTool('diamond', this)">💎 Diamond</button>
+        <button class="mc-btn" onclick="selectTool('air', this)">⛏️ Mine</button>
+      </div>
+      <div id="world-grid"></div>
+      <div style="margin-top:10px;">
+        <button class="mc-btn" onclick="resetWorld()">🔄 Reset Sandbox</button>
+        <a href="index.html"><button class="mc-btn">⬅️ Back to Main Blog</button></a>
+      </div>
+    </div>
   </div>
 
-  <div class="stone-panel">
-    <div style="margin-bottom: 10px; font-size: 13px;">
-      <b>[ BLOCK PALETTE ]</b> Select a block & click on the sky to build!
+  <!-- ==================== 畫面 B：礦坑 Windows 桌面 (THE MINE OS) ==================== -->
+  <div id="mine-desktop">
+    <!-- 左側桌面圖示區（程式會自動根據 minePosts 生成每個檔案圖示！） -->
+    <div class="desktop-icons" id="mine-icons-container"></div>
+
+    <!-- 中央 Windows 98 文章閱讀視窗 -->
+    <div class="win98-window" id="mine-window">
+      <div class="win98-titlebar">
+        <span id="win-title">📄 Notepad - Welcome_to_the_Mine.txt</span>
+        <button onclick="enterRoom('hub')" style="background:#C0C0C0; border:1px outset #FFF; font-weight:bold; cursor:pointer;">X</button>
+      </div>
+      <div class="win98-menubar">
+        <u>F</u>ile &nbsp;&nbsp; <u>E</u>dit &nbsp;&nbsp; <u>S</u>earch &nbsp;&nbsp; <u>H</u>elp &nbsp;&nbsp; | &nbsp;&nbsp; <i>Location: Y-Level 12 (Diamond Layer)</i>
+      </div>
+      <div class="win98-body" id="win-content">
+        <!-- 文章內容會自動渲染在這裡 -->
+      </div>
+      <div class="win98-statusbar">
+        <span id="win-date">Date: 2009-05-17</span>
+        <span>Torch Light: 14 | Creeper Alert: SAFE</span>
+      </div>
     </div>
 
-    <!-- 方塊選擇列 -->
-    <div id="toolbar">
-      <button class="mc-btn active" onclick="selectTool('grass', this)">🟩 Grass</button>
-      <button class="mc-btn" onclick="selectTool('stone', this)">⬜ Stone</button>
-      <button class="mc-btn" onclick="selectTool('wood', this)">🟫 Wood</button>
-      <button class="mc-btn" onclick="selectTool('diamond', this)">💎 Diamond</button>
-      <button class="mc-btn" onclick="selectTool('tnt', this)">🧨 TNT</button>
-      <button class="mc-btn" onclick="selectTool('air', this)">⛏️ Mine (Erase)</button>
-    </div>
-
-    <!-- 16x10 互動方塊世界 -->
-    <div id="world-grid"></div>
-
-    <!-- 底部控制與返回按鈕 -->
-    <div style="margin-top: 12px;">
-      <button class="mc-btn" onclick="detonateTNT()" style="background-color:#B22222;">💥 DETONATE ALL TNT</button>
-      <button class="mc-btn" onclick="resetWorld()">🔄 Reset Terrain</button>
-      <br><br>
-      <a href="index.html"><button class="mc-btn" style="width: 260px;">⬅️ Back to Main Blog</button></a>
+    <!-- 底部 Windows 工作列 -->
+    <div class="win98-taskbar">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="start-btn" onclick="enterRoom('hub')">⛏️ Exit Mine (To Village)</button>
+        <span style="border:1px inset #808080; padding:2px 8px; background:#E0E0E0; font-weight:bold;" id="taskbar-active-doc">📄 Mrs_Veal_Notes.txt</span>
+      </div>
+      <div class="taskbar-clock">🔥 Torches Lit | Y: 12</div>
     </div>
   </div>
 
 <script>
-  const grid = document.getElementById('world-grid');
-  let currentTool = 'grass';
-  const rows = 10;
-  const cols = 16;
+// =========================================================================
+// 礦坑房間專屬文章庫 (MINE OS POSTS)
+// 以後想在礦坑桌面新增更多閱讀或寫作筆記，只要在這裡往下新增物件即可！
+// =========================================================================
+const minePosts = [
+  {
+    id: "post-veal",
+    icon: "🕯️",
+    fileName: "Mrs_Veal_1706.txt",
+    date: "2009-05-17",
+    title: "Mining for Writing Craft: Daniel Defoe's 'The Apparition of Mrs. Veal'",
+    content: `
 
-  function selectTool(tool, btn) {
-    currentTool = tool;
-    document.querySelectorAll('#toolbar .mc-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+🕯️ Reading Notes: The Apparition of Mrs. Veal (1706)
+Source: 100 Great Short Stories | Goal: Leveling up my English writing craft
+I brought my anthology down to the mine today and finished reading Daniel Defoe's classic ghost story, "The Apparition of Mrs. Veal." At first, I expected a spooky, dramatic horror tale—but what I found was a masterclass in realism and narrative credibility.
+⛏️ What I Mined for My Own Writing:
+• Hyper-Specific Mundane Details: Instead of describing glowing ectoplasm, Defoe makes Mrs. Veal talk about a scoured silk gown, tea, and everyday gossip. Those ordinary details make the supernatural moment hit way harder!
+• The "Journalistic" Framing: Defoe writes like a matter-of-fact reporter interviewing reliable witnesses (Mrs. Bargrave). When a writer stays calm and objective, the reader willingly suspends disbelief.
+• Pacing the Reveal: The realization that Mrs. Veal had already died the day before comes quietly at the end—no jump scares, just a lingering chill.
+Writing Takeaway: Next time I write a story or an essay, I want to stop relying on big, flashy adjectives and start grounding my scenes in concrete, believable sensory details—just like digging down to bedrock before building up!
+}, { id: "post-readme", icon: "📜", fileName: "README_MINE.txt", date: "2009-05-16", title: "Welcome to The Mine (My Underground Study Room)", content:
+⛏️ Welcome to Y-Level 12!
+This underground bunker is the very first building in my Minecraft Village.
+Whenever I want to dig deep into classic literature, analyze short stories, or practice my English writing craft away from the noisy surface world, I come down here.
+Click the icons on the left side of this desktop to switch between different notes and writing logs!
+`
   }
-
-  function setBlockType(cell, type) {
-    cell.className = 'block ' + type;
-    cell.dataset.type = type;
-    cell.innerText = type === 'tnt' ? 'TNT' : '';
-  }
-
-  function resetWorld() {
-    grid.innerHTML = '';
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const cell = document.createElement('div');
-        cell.dataset.r = r;
-        cell.dataset.c = c;
-        
-        // 預設地形：第7層草地，第8層石頭，最底層鑽石礦
-        if (r === 7) setBlockType(cell, 'grass');
-        else if (r === 8) setBlockType(cell, 'stone');
-        else if (r === 9) setBlockType(cell, (c % 4 === 0) ? 'diamond' : 'stone');
-        else setBlockType(cell, 'air');
-
-        cell.onclick = () => setBlockType(cell, currentTool);
-        grid.appendChild(cell);
-      }
-    }
-  }
-
-  function detonateTNT() {
-    const cells = Array.from(grid.children);
-    let exploded = false;
-    cells.forEach((cell, idx) => {
-      if (cell.dataset.type === 'tnt') {
-        exploded = true;
-        const r = parseInt(cell.dataset.r);
-        const c = parseInt(cell.dataset.c);
-        // 炸掉周圍 3x3 範圍
-        cells.forEach(target => {
-          const tr = parseInt(target.dataset.r);
-          const tc = parseInt(target.dataset.c);
-          if (Math.abs(tr - r) <= 1 && Math.abs(tc - c) <= 1) {
-            setBlockType(target, 'air');
-          }
-        });
-      }
-    });
-    if (!exploded) alert("Place some TNT blocks first!");
-  }
-
-  resetWorld();
-</script>
-</body>
-</html>
+];
+// 自動依日期從新到舊排序礦坑文章
+minePosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+// 初始化礦坑桌面圖示與預設開啟最新一篇
+const iconsContainer = document.getElementById('mine-icons-container');
+minePosts.forEach((post, index) => {
+const iconEl = document.createElement('div');
+iconEl.className = 'win-icon';
+iconEl.innerHTML = <span class="win-icon-emoji">${post.icon}</span><span>${post.fileName}</span>;
+iconEl.onclick = () => openMinePost(post);
+iconsContainer.appendChild(iconEl);
+if (index === 0) openMinePost(post);
+});
+function openMinePost(post) {
+document.getElementById('win-title').innerText = 📄 Notepad - ${post.fileName};
+document.getElementById('win-content').innerHTML = post.content;
+document.getElementById('win-date').innerText = Date: ${post.date};
+document.getElementById('taskbar-active-doc').innerText = ${post.icon} ${post.fileName};
+}
+// 切換「村莊大廳」與「礦坑房間」的函式
+function enterRoom(room) {
+if (room === 'mine') {
+document.body.className = 'mine-mode';
+document.getElementById('village-hub').style.display = 'none';
+document.getElementById('mine-desktop').style.display = 'block';
+} else {
+document.body.className = 'hub-mode';
+document.getElementById('mine-desktop').style.display = 'none';
+document.getElementById('village-hub').style.display = 'block';
+}
+}
+// ==================== 村莊大廳沙盒畫布邏輯 ====================
+const grid = document.getElementById('world-grid');
+let currentTool = 'grass';
+function selectTool(tool, btn) {
+currentTool = tool;
+document.querySelectorAll('#toolbar .mc-btn').forEach(b => b.classList.remove('active'));
+btn.classList.add('active');
+}
+function resetWorld() {
+grid.innerHTML = '';
+for (let r = 0; r < 8; r++) {
+for (let c = 0; c < 16; c++) {
+const cell = document.createElement('div');
+let type = 'air';
+if (r === 5) type = 'grass';
+else if (r === 6) type = 'stone';
+else if (r === 7) type = (c % 4 === 0) ? 'diamond' : 'stone';
+cell.className = 'block ' + type;
+cell.onclick = () => { cell.className = 'block ' + currentTool; };
+grid.appendChild(cell);
+}
+}
+}
+resetWorld();
