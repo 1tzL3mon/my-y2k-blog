@@ -181,6 +181,34 @@
 // 每一篇的 customClass 和 content 都可以放完全不同的 HTML、CSS 或互動小遊戲！
 // =========================================================================
 const blogPosts = [
+    {
+    date: "2001-12-10",
+    time: "02:18 AM",
+    title: "Surviving the GSAT Exam Marathon... Send Coffee! ☕📚",
+    mood: "Brain Fried 🤯",
+    music: "Linkin Park - In The End (on repeat)",
+    customClass: "",
+    content: `
+      <div style="background-color:#0B132B; color:#E0FBFC; border:2px dashed #FFD166; padding:12px; font-family:'Courier New', monospace;">
+        <div style="color:#FFD166; font-weight:bold; margin-bottom:8px;">
+          [ STATUS: LATE NIGHT STUDY SESSION IN PROGRESS ]
+        </div>
+        <p style="line-height:1.5;">
+          Ugh, my desk is completely buried under past exam papers and vocabulary flashcards right now. Preparing for the <b>GSAT (General Scholastic Ability Test)</b> feels like fighting a final boss with zero MP left!
+        </p>
+        <p style="line-height:1.5;">
+          Math formulas are swimming in my head, and I'm pretty sure my blood type is 80% iced coffee at this point. Still, gotta keep grinding—future me will thank me when it's all over!
+        </p>
+        <div style="background:#1C2541; border:1px solid #5BC0BE; padding:8px; margin-top:10px; text-align:center;">
+          <div style="font-size:11px; color:#5BC0BE; margin-bottom:5px;">:: CLICK FOR AN EXAM LUCK CHARM ::</div>
+          <div id="gsat-luck" style="color:#FFD166; font-weight:bold; min-height:18px; margin-bottom:6px;">[ Waiting for input... ]</div>
+          <button class="retro-btn" onclick="const charms=['✨ +100% Guessing Accuracy on Multiple Choice!','🍀 English Essay Topic Will Be Super Easy!','⚡ Instant Math Formula Recall Unlocked!','☕ Infinite Focus Buff Activated!']; document.getElementById('gsat-luck').innerText=charms[Math.floor(Math.random()*charms.length)];">
+            [ CAST_EXAM_BUFF.EXE ]
+          </button>
+        </div>
+      </div>
+    `
+  },
   {
     date: "2001-11-24",
     time: "11:42 PM",
