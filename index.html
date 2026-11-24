@@ -154,6 +154,16 @@
       <!-- 右側：經典 2000 年側邊欄 -->
       <td class="sidebar-col">
         <div class="side-box">
+        <!-- 學測 LED 倒數計時器 -->
+        <div class="side-box" style="text-align:center; background-color:#111; border:2px inset #808080;">
+          <div class="side-header" style="background-color:#800000; color:#FFFFFF;">:: GSAT EXAM COUNTDOWN ::</div>
+          <div id="gsat-timer" style="color:#FF2A2A; font-family:'Courier New', monospace; font-size:15px; font-weight:bold; letter-spacing:1px; padding:6px 0; text-shadow: 0 0 5px #FF0000;">
+            LOADING...
+          </div>
+          <div style="color:#00FF00; font-family:monospace; font-size:10px; margin-top:2px;">
+            TARGET: 2027-01-16 09:20
+          </div>
+        </div>
           <div class="side-header">:: ABOUT WEBMASTER ::</div>
           <p style="margin:0;"><b>Name:</b> CyberKid2000<br>
           <b>Location:</b> Cyberspace<br>
@@ -334,6 +344,40 @@ Object.keys(archiveCounts).forEach(ym => {
 
 // 網頁載入時預設顯示全部文章
 renderPosts(null);
+  // =========================================================================
+// 學測即時倒數計時器邏輯（你可以自由修改下方的目標日期與時間）
+// =========================================================================
+const examTargetDate = new Date("2027-01-16T09:20:00").getTime();
+
+function updateCountdown() {
+  const now = new Date().getTime();
+  const distance = examTargetDate - now;
+  const timerEl = document.getElementById("gsat-timer");
+
+  if (!timerEl) return;
+
+  if (distance <= 0) {
+    timerEl.innerHTML = "EXAM TIME! GOOD LUCK!";
+    return;
+  }
+
+  const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  // 補零成兩位數，更有電子鐘感
+  const h = String(hours).padStart(2, '0');
+  const m = String(minutes).padStart(2, '0');
+  const s = String(seconds).padStart(2, '0');
+
+  timerEl.innerHTML = `${days}D ${h}:${m}:${s}`;
+}
+
+// 網頁載入立刻執行一次，之後每 1000 毫秒（1秒）更新一次
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
 </script>
 
 </body>
