@@ -115,10 +115,12 @@
 
   /* 礦坑 Windows 桌面元件 */
   #mine-desktop { display: none; width: 100%; height: 100%; position: relative; padding: 20px; }
-  .desktop-icons { display: flex; flex-direction: column; gap: 16px; width: 115px; float: left; }
-  .win-icon { text-align: center; cursor: pointer; padding: 6px; border: 1px solid transparent; color: #FFFFFF; text-shadow: 1px 1px 2px #000; font-size: 11px; }
+  /* 支援最多 40 個圖示的自動換行網格 (每行 8 個，共 5 行) */
+  .desktop-icons { display: grid; grid-auto-flow: column; grid-template-rows: repeat(8, 62px); grid-auto-columns: 76px; gap: 6px; float: left; }
+  .win-icon { text-align: center; cursor: pointer; padding: 4px 2px; border: 1px solid transparent; color: #FFFFFF; text-shadow: 1px 1px 2px #000; font-size: 10px; overflow: hidden; }
   .win-icon:hover { background-color: rgba(0, 0, 128, 0.55); border: 1px dotted #FFFFFF; }
-  .win-icon-emoji { font-size: 30px; display: block; margin-bottom: 4px; }
+  .win-icon-emoji { font-size: 24px; display: block; margin-bottom: 2px; }
+
 
   .win98-window {
     width: 640px; max-width: 78vw; background-color: #C0C0C0; color: #000000;
@@ -198,7 +200,19 @@
 
 <script>
 // 礦坑房間專屬文章庫 (想新增文章就在這裡往下加)
+// 礦坑房間專屬文章庫（系統會自動依日期「從早到晚」排序，每 40 篇自動往下挖一層 Y-Level！）
 const minePosts = [
+  {
+    icon: "📜",
+    fileName: "README_MINE.txt",
+    date: "2009-05-16",
+    content: `
+      <h2 style="color:#006600; margin-top:0;">⛏️ Welcome to The Mine (Y-Level 50)</h2>
+      <p>This underground bunker is the very first building in my <b>Minecraft Village</b>.</p>
+      <p>Every entry is arranged chronologically starting from <b>Y-Level 50</b> at the top-left corner. Once a layer reaches <b>40 entries</b>, a deeper Y-Level is automatically excavated!</p>
+      <p>Click the icons on the left side of this desktop to read my notes.</p>
+    `
+  },
   {
     icon: "🕯️",
     fileName: "Mrs_Veal_1706.txt",
@@ -221,34 +235,65 @@ const minePosts = [
       </div>
       <p><b>Writing Takeaway:</b> Next time I write a story or an English essay, I want to stop relying on big, flashy adjectives and start grounding my scenes in concrete, believable sensory details—just like digging down to bedrock before building up!</p>
     `
-  },
-  {
-    icon: "📜",
-    fileName: "README_MINE.txt",
-    date: "2009-05-16",
-    content: `
-      <h2 style="color:#006600; margin-top:0;">⛏️ Welcome to The Mine (My Underground Study)</h2>
-      <p>This underground bunker is the very first building in my <b>Minecraft Village</b>.</p>
-      <p>Whenever I want to dig deep into classic literature, analyze short stories from <i>100 Great Short Stories</i>, or practice my English writing craft away from the noisy surface world, I come down here.</p>
-      <p>Click the icons on the left side of this desktop to switch between different notes and writing logs!</p>
-    `
   }
 ];
 
-minePosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+// 1. 依日期「從早到晚」排序（最早的在 Y:50 左上角）
+minePosts.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-const iconsContainer = document.getElementById('mine-icons-container');
-minePosts.forEach((post, index) => {
-  const iconEl = document.createElement('div');
-  iconEl.className = 'win-icon';
-  iconEl.innerHTML = `<span class="win-icon-emoji">${post.icon}</span><span>${post.fileName}</span>`;
-  iconEl.onclick = () => openMinePost(post);
-  iconsContainer.appendChild(iconEl);
-  if (index === 0) openMinePost(post);
-});
+const POSTS_PER_LEVEL = 40;
+const START_Y_LEVEL = 50;
+let currentLevel = START_Y_LEVEL;
 
-function openMinePost(post) {
-  document.getElementById('win-title').innerText = `📄 Notepad - ${post.fileName}`;
+// 計算目前總共挖到第幾層 Y-Level
+const totalLevels = Math.max(1, Math.ceil(minePosts.length / POSTS_PER_LEVEL));
+
+// 在右下角工作列生成「Y-Level 深度切換器」
+const clockEl = document.querySelector('.taskbar-clock');
+function renderLevelSelector() {
+  let buttonsHTML = `⛏️ Depth: `;
+  for (let i = 0; i < totalLevels; i++) {
+    const yVal = START_Y_LEVEL - i;
+    const activeStyle = (yVal === currentLevel) 
+      ? 'background:#000080; color:#FFF; font-weight:bold;' 
+      : 'background:#C0C0C0; color:#000;';
+    buttonsHTML += `<button onclick="switchYLevel(${yVal})" style="${activeStyle} border:1px outset #FFF; cursor:pointer; font-size:11px; margin:0 2px; padding:1px 5px;">Y:${yVal}</button>`;
+  }
+  clockEl.innerHTML = buttonsHTML;
+}
+
+// 切換 Y-Level 並渲染該層的最多 40 篇文章
+function switchYLevel(yLevel) {
+  currentLevel = yLevel;
+  const levelIndex = START_Y_LEVEL - yLevel;
+  const startIdx = levelIndex * POSTS_PER_LEVEL;
+  const levelPosts = minePosts.slice(startIdx, startIdx + POSTS_PER_LEVEL);
+
+  // 更新視窗頂部路徑列顯示目前所在深度
+  const menuBar = document.querySelector('.win98-menubar');
+  if (menuBar) {
+    menuBar.innerHTML = `<u>F</u>ile &nbsp;&nbsp; <u>E</u>dit &nbsp;&nbsp; <u>S</u>earch &nbsp;&nbsp; | &nbsp;&nbsp; <i>Location: Y-Level ${yLevel} (${levelPosts.length}/40 slots filled)</i>`;
+  }
+
+  // 渲染該層桌面圖示
+  const iconsContainer = document.getElementById('mine-icons-container');
+  iconsContainer.innerHTML = '';
+  levelPosts.forEach((post, idx) => {
+    const iconEl = document.createElement('div');
+    iconEl.className = 'win-icon';
+    iconEl.innerHTML = `<span class="win-icon-emoji">${post.icon}</span><span>${post.fileName}</span>`;
+    iconEl.onclick = () => openMinePost(post, yLevel);
+    iconsContainer.appendChild(iconEl);
+
+    // 預設開啟該層最新的一篇
+    if (idx === levelPosts.length - 1) openMinePost(post, yLevel);
+  });
+
+  renderLevelSelector();
+}
+
+function openMinePost(post, yLevel = currentLevel) {
+  document.getElementById('win-title').innerText = `📄 Notepad - ${post.fileName} [Y:${yLevel}]`;
   document.getElementById('win-content').innerHTML = post.content;
   document.getElementById('win-date').innerText = `Date: ${post.date}`;
   document.getElementById('taskbar-active-doc').innerText = `${post.icon} ${post.fileName}`;
@@ -259,12 +304,17 @@ function enterRoom(room) {
     document.body.className = 'mine-mode';
     document.getElementById('village-hub').style.display = 'none';
     document.getElementById('mine-desktop').style.display = 'block';
+    switchYLevel(currentLevel);
   } else {
     document.body.className = 'hub-mode';
     document.getElementById('mine-desktop').style.display = 'none';
     document.getElementById('village-hub').style.display = 'block';
   }
 }
+
+// 初始化預設進入最新開挖的那一層
+switchYLevel(START_Y_LEVEL - (totalLevels - 1));
+
 
 // 村莊大廳 16x10 互動式方塊沙盒邏輯
 const grid = document.getElementById('world-grid');
